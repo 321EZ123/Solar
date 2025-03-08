@@ -33,7 +33,7 @@ const serverFactory = (handler) => {
     });
 };
 
-const app = fastify({ logger: true, serverFactory }); // Enable logging
+const app = fastify({ logger: true, serverFactory });
 
 await app.register(fastifyCompress, { global: true });
 app.register(fastifyCors, {
@@ -93,7 +93,7 @@ files.forEach(({ route, file }) =>
 
 // Start the server
 try {
-  const address = await app.listen({ port: Port }); // Use `port` key
+  const address = await app.listen({ port: Port });
   console.log("Solar is listening on:");
   console.log(`\thttp://localhost:${Port}`);
   console.log(`\t${address}`);
