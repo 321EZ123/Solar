@@ -33,7 +33,7 @@ const serverFactory = (handler) => {
     });
 };
 
-const app = fastify({ logger: false, serverFactory });
+const app = fastify({ logger: true, serverFactory }); // Enable logging
 
 await app.register(fastifyCompress, { global: true });
 app.register(fastifyCors, {
@@ -47,6 +47,7 @@ app.register(fastifyStatic, {
   decorateReply: true,
 });
 
+// Register routes for static files
 const routes = [
   { pathDir: epoxyPath, prefix: "/e/" },
   { pathDir: libcurlPath, prefix: "/l/" },
@@ -62,6 +63,7 @@ routes.forEach(({ pathDir, prefix }) =>
   }),
 );
 
+// Suggestion endpoint
 app.get("/suggest", async (request, reply) => {
   const query = request.query.q;
   if (!query) {
@@ -77,6 +79,7 @@ app.get("/suggest", async (request, reply) => {
   }
 });
 
+// File serving routes
 const files = [
   { route: "/gms", file: "games.html" },
   { route: "/g", file: "go.html" },
@@ -88,12 +91,13 @@ files.forEach(({ route, file }) =>
   app.get(route, (request, reply) => reply.sendFile(file)),
 );
 
+// Start the server
 try {
-  const address = app.listen({ Port });
+  const address = await app.listen({ port: Port }); // Use `port` key
   console.log("Solar is listening on:");
   console.log(`\thttp://localhost:${Port}`);
   console.log(`\t${address}`);
 } catch (err) {
-  console.error(err);
+  console.error("Failed to start server:", err);
   process.exit(1);
 }
